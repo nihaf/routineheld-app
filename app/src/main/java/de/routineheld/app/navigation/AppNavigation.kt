@@ -11,6 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.routineheld.app.ui.activities.ActivitiesScreen
 import de.routineheld.app.ui.plans.PlansScreen
+import de.routineheld.app.ui.plans.editor.PlanEditorScreen
 import de.routineheld.app.ui.weekplan.WeekPlanScreen
 
 @Composable
@@ -50,7 +51,18 @@ fun AppNavigation() {
                 ActivitiesScreen()
             }
             composable<Screen.Plans> {
-                PlansScreen()
+                PlansScreen(
+                    onNavigateToEditor = { planId ->
+                        navController.navigate(Screen.PlanEditor(planId = planId))
+                    }
+                )
+            }
+            composable<Screen.PlanEditor> { backStackEntry ->
+                val planEditor: Screen.PlanEditor = backStackEntry.toRoute()
+                PlanEditorScreen(
+                    planId = planEditor.planId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable<Screen.WeekPlan> {
                 WeekPlanScreen()
