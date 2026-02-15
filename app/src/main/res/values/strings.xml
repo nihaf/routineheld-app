@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RoutineHeld</string>
+    <string name="tab_activities">Aktivitäten</string>
+    <string name="tab_plans">Abläufe</string>
+    <string name="tab_weekplan">Wochenplan</string>
+    <string name="placeholder_activities">Aktivitäten – Inhalt folgt in Phase 2</string>
+    <string name="placeholder_plans">Abläufe – Inhalt folgt in Phase 3</string>
+    <string name="placeholder_weekplan">Wochenplan – Inhalt folgt in Phase 5</string>
+</resources>
