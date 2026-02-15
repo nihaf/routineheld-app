@@ -13,6 +13,7 @@ import de.routineheld.app.ui.activities.ActivitiesScreen
 import de.routineheld.app.ui.plans.PlansScreen
 import de.routineheld.app.ui.plans.editor.PlanEditorScreen
 import de.routineheld.app.ui.weekplan.WeekPlanScreen
+import de.routineheld.app.ui.weekplan.editor.WeekPlanEditorScreen
 
 @Composable
 fun AppNavigation() {
@@ -65,7 +66,18 @@ fun AppNavigation() {
                 )
             }
             composable<Screen.WeekPlan> {
-                WeekPlanScreen()
+                WeekPlanScreen(
+                    onNavigateToEditor = { weekPlanId ->
+                        navController.navigate(Screen.WeekPlanEditor(weekPlanId = weekPlanId))
+                    }
+                )
+            }
+            composable<Screen.WeekPlanEditor> { backStackEntry ->
+                val weekPlanEditor: Screen.WeekPlanEditor = backStackEntry.toRoute()
+                WeekPlanEditorScreen(
+                    weekPlanId = weekPlanEditor.weekPlanId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
     }

@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import de.routineheld.app.data.local.entity.ActivityEntity
 import de.routineheld.app.data.local.relation.RoutinePlanWithEntries
+import de.routineheld.app.data.local.relation.WeekPlanWithSlots
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -20,7 +21,8 @@ import javax.inject.Singleton
 @Singleton
 class PdfExportManager @Inject constructor(
     private val context: Context,
-    private val pdfGenerator: RoutinePlanPdfGenerator
+    private val routinePlanPdfGenerator: RoutinePlanPdfGenerator,
+    private val weekPlanPdfGenerator: WeekPlanPdfGenerator
 ) {
     sealed class ExportResult {
         data class Success(val file: File, val uri: Uri) : ExportResult()
@@ -35,7 +37,7 @@ class PdfExportManager @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val config = RoutinePlanPdfGenerator.PdfConfig(childName = childName)
-                val tempFile = pdfGenerator.generate(plan, activities, config)
+                val tempFile = routinePlanPdfGenerator.generate(plan, activities, config)
 
                 copyToDownloads(tempFile, plan.plan.name)
 
@@ -82,6 +84,31 @@ class PdfExportManager @Inject constructor(
         context.startActivity(Intent.createChooser(intent, "Plan teilen").apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         })
+    }
+
+    suspend fun exportWeekPlan(
+        weekPlan: WeekPlanWithSlots,
+        plans: Map<Long, RoutinePlanWithEntries>,
+        activities: Map<Long, ActivityEntity>,
+        childName: String? = null
+    ): ExportResult {
+        return withContext(Dispatchers.IO) {
+            try {
+                val tempFile = weekPlanPdfGenerator.generate(weekPlan, plans, activities, childName)
+
+                copyToDownloads(tempFile, weekPlan.weekPlan.name)
+
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    tempFile
+                )
+
+                ExportResult.Success(tempFile, uri)
+            } catch (e: Exception) {
+                ExportResult.Error(e.message ?: "Unbekannter Fehler beim PDF-Export")
+            }
+        }
     }
 
     private fun String.sanitize(): String =

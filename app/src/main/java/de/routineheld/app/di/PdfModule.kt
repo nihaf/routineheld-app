@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.routineheld.app.util.pdf.PdfExportManager
 import de.routineheld.app.util.pdf.RoutinePlanPdfGenerator
+import de.routineheld.app.util.pdf.WeekPlanPdfGenerator
 import javax.inject.Singleton
 
 @Module
@@ -24,10 +25,19 @@ object PdfModule {
 
     @Provides
     @Singleton
+    fun provideWeekPlanPdfGenerator(
+        @ApplicationContext context: Context
+    ): WeekPlanPdfGenerator {
+        return WeekPlanPdfGenerator(context)
+    }
+
+    @Provides
+    @Singleton
     fun providePdfExportManager(
         @ApplicationContext context: Context,
-        pdfGenerator: RoutinePlanPdfGenerator
+        routinePlanPdfGenerator: RoutinePlanPdfGenerator,
+        weekPlanPdfGenerator: WeekPlanPdfGenerator
     ): PdfExportManager {
-        return PdfExportManager(context, pdfGenerator)
+        return PdfExportManager(context, routinePlanPdfGenerator, weekPlanPdfGenerator)
     }
 }

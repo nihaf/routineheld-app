@@ -18,5 +18,8 @@ sealed interface Screen {
     data class PlanEditor(val planId: Long? = null) : Screen
 
     @Serializable
+    data class WeekPlanEditor(val weekPlanId: Long) : Screen
+
+    @Serializable
     data object Settings : Screen
 }
