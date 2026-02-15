@@ -85,17 +85,19 @@ fun WeekPlanEditorScreen(
 
     // Assignment sheet
     if (uiState.showAssignSheet && uiState.selectedDay != null && uiState.selectedTime != null) {
+        val selectedDay = uiState.selectedDay!!
+        val selectedTime = uiState.selectedTime!!
         SlotAssignSheet(
-            day = DayOfWeek.fromIndex(uiState.selectedDay),
-            time = TimeOfDay.fromIndex(uiState.selectedTime),
-            currentSlot = slotMap[Pair(uiState.selectedDay, uiState.selectedTime)],
+            day = DayOfWeek.fromIndex(selectedDay),
+            time = TimeOfDay.fromIndex(selectedTime),
+            currentSlot = slotMap[Pair(selectedDay, selectedTime)],
             availablePlans = availablePlans,
             allActivities = allActivities,
             onAssignPlan = { planId ->
-                viewModel.assignPlanToSlot(uiState.selectedDay, uiState.selectedTime, planId)
+                viewModel.assignPlanToSlot(selectedDay, selectedTime, planId)
             },
             onAssignActivity = { activityId ->
-                viewModel.assignActivityToSlot(uiState.selectedDay, uiState.selectedTime, activityId)
+                viewModel.assignActivityToSlot(selectedDay, selectedTime, activityId)
             },
             onDismiss = viewModel::dismissAssignSheet
         )
@@ -103,6 +105,8 @@ fun WeekPlanEditorScreen(
 
     // Slot menu (long press)
     if (uiState.showSlotMenu && uiState.menuSlotDay != null && uiState.menuSlotTime != null) {
+        val menuSlotDay = uiState.menuSlotDay!!
+        val menuSlotTime = uiState.menuSlotTime!!
         var showMenu by remember { mutableStateOf(true) }
 
         DropdownMenu(
@@ -117,21 +121,21 @@ fun WeekPlanEditorScreen(
                 onClick = {
                     showMenu = false
                     viewModel.dismissSlotMenu()
-                    viewModel.showAssignSheet(uiState.menuSlotDay, uiState.menuSlotTime)
+                    viewModel.showAssignSheet(menuSlotDay, menuSlotTime)
                 }
             )
             DropdownMenuItem(
                 text = { Text("Auf ganze Woche kopieren") },
                 onClick = {
                     showMenu = false
-                    viewModel.copySlotToWholeWeek(uiState.menuSlotDay, uiState.menuSlotTime)
+                    viewModel.copySlotToWholeWeek(menuSlotDay, menuSlotTime)
                 }
             )
             DropdownMenuItem(
                 text = { Text("Entfernen") },
                 onClick = {
                     showMenu = false
-                    viewModel.clearSlot(uiState.menuSlotDay, uiState.menuSlotTime)
+                    viewModel.clearSlot(menuSlotDay, menuSlotTime)
                 }
             )
         }
@@ -155,11 +159,11 @@ fun WeekPlanEditorScreen(
     }
 
     // Export error dialog
-    if (uiState.exportError != null) {
+    uiState.exportError?.let { error ->
         AlertDialog(
             onDismissRequest = viewModel::dismissExportError,
             title = { Text("Fehler beim Export") },
-            text = { Text(uiState.exportError) },
+            text = { Text(error) },
             confirmButton = {
                 TextButton(onClick = viewModel::dismissExportError) {
                     Text("OK")

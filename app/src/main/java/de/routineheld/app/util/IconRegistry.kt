@@ -86,9 +86,20 @@ object IconRegistry {
         allIcons.filter { it.nameDE.contains(query, ignoreCase = true) }
 
     /**
-     * Get the drawable resource ID for an icon reference
+     * Get the drawable resource ID for an icon reference.
+     *
+     * Note: Uses getIdentifier() for dynamic resource loading based on database-stored
+     * icon references. While this is discouraged by lint (slower than direct R.drawable
+     * references), it's necessary here because:
+     * - The app has 48 different activity icons
+     * - Icon references are stored as strings in the database
+     * - Icons must be loaded dynamically at runtime
+     *
+     * The lint warnings about "unused resources" for these drawables are false positives
+     * since they ARE used, just not through direct references that lint can detect.
      */
     @DrawableRes
+    @Suppress("DiscouragedApi")
     fun getDrawableRes(context: Context, ref: String): Int {
         return context.resources.getIdentifier(ref, "drawable", context.packageName)
     }

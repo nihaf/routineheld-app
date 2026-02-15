@@ -1,5 +1,6 @@
 package de.routineheld.app.ui.plans.editor
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlanEditorScreen(
     planId: Long?,
@@ -185,11 +186,11 @@ fun PlanEditorScreen(
         )
     }
 
-    if (uiState.exportError != null) {
+    uiState.exportError?.let { error ->
         AlertDialog(
             onDismissRequest = viewModel::dismissExportDialog,
             title = { Text("Fehler") },
-            text = { Text(uiState.exportError) },
+            text = { Text(error) },
             confirmButton = {
                 Button(onClick = viewModel::dismissExportDialog) {
                     Text("OK")

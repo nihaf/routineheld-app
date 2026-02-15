@@ -218,11 +218,11 @@ private fun DeleteConfirmationDialog(
         text = {
             if (usageCount > 0) {
                 Text(
-                    "„$activityName" wird in $usageCount Ablaufplänen verwendet. " +
+                    "'$activityName' wird in $usageCount Ablaufplänen verwendet. " +
                             "Beim Löschen wird sie auch aus diesen Plänen entfernt."
                 )
             } else {
-                Text("Möchtest du „$activityName" wirklich löschen?")
+                Text("Möchtest du '$activityName' wirklich löschen?")
             }
         },
         confirmButton = {

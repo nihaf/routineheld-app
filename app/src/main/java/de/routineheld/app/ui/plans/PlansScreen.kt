@@ -138,11 +138,11 @@ fun PlansScreen(
         )
     }
 
-    if (uiState.exportError != null) {
+    uiState.exportError?.let { error ->
         AlertDialog(
             onDismissRequest = viewModel::dismissExportDialog,
             title = { Text("Fehler") },
-            text = { Text(uiState.exportError) },
+            text = { Text(error) },
             confirmButton = {
                 Button(onClick = viewModel::dismissExportDialog) {
                     Text("OK")
