@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -92,7 +93,8 @@ fun PlansScreen(
                             onDelete = { viewModel.showDeleteDialog(planWithEntries.plan) },
                             onDuplicate = {
                                 viewModel.duplicatePlan(planWithEntries.plan.id, onNavigateToEditor)
-                            }
+                            },
+                            onExport = { viewModel.exportPlanAsPdf(planWithEntries.plan.id) }
                         )
                     }
                 }
@@ -123,6 +125,28 @@ fun PlansScreen(
             },
             dismissButton = {
                 TextButton(onClick = viewModel::dismissDeleteDialog) { Text("Abbrechen") }
+            }
+        )
+    }
+
+    if (uiState.isExporting) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = { },
+            icon = { CircularProgressIndicator() },
+            text = { Text("PDF wird erstellt…") }
+        )
+    }
+
+    if (uiState.exportError != null) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissExportDialog,
+            title = { Text("Fehler") },
+            text = { Text(uiState.exportError) },
+            confirmButton = {
+                Button(onClick = viewModel::dismissExportDialog) {
+                    Text("OK")
+                }
             }
         )
     }

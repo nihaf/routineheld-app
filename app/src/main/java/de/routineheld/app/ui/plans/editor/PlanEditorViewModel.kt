@@ -1,5 +1,6 @@
 package de.routineheld.app.ui.plans.editor
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import de.routineheld.app.data.local.entity.ActivityEntity
 import de.routineheld.app.data.local.relation.RoutinePlanWithEntries
 import de.routineheld.app.data.repository.ActivityRepository
 import de.routineheld.app.data.repository.RoutinePlanRepository
+import de.routineheld.app.util.pdf.PdfExportManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class PlanEditorViewModel @Inject constructor(
     private val planRepository: RoutinePlanRepository,
     private val activityRepository: ActivityRepository,
+    private val pdfExportManager: PdfExportManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -125,10 +128,53 @@ class PlanEditorViewModel @Inject constructor(
             }
         }
     }
+
+    fun exportAsPdf() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isExporting = true, exportError = null, exportedFileUri = null) }
+
+            val plan = planWithEntries.value
+            if (plan == null) {
+                _uiState.update { it.copy(isExporting = false, exportError = "Plan nicht gefunden") }
+                return@launch
+            }
+
+            val activityMap = plan.entries
+                .mapNotNull { entry ->
+                    allActivities.value.find { it.id == entry.activityId }
+                }
+                .associateBy { it.id }
+
+            val result = pdfExportManager.exportPlan(plan, activityMap, childName = null)
+
+            when (result) {
+                is PdfExportManager.ExportResult.Success -> {
+                    _uiState.update { it.copy(
+                        isExporting = false,
+                        exportedFileUri = result.uri
+                    )}
+                    pdfExportManager.sharePdf(result.uri, plan.plan.name)
+                }
+                is PdfExportManager.ExportResult.Error -> {
+                    _uiState.update { it.copy(
+                        isExporting = false,
+                        exportError = result.message
+                    )}
+                }
+            }
+        }
+    }
+
+    fun dismissExportDialog() {
+        _uiState.update { it.copy(exportedFileUri = null, exportError = null) }
+    }
 }
 
 data class PlanEditorUiState(
     val activeSlotPosition: Int? = null,
     val showActivityPicker: Boolean = false,
-    val showRenameDialog: Boolean = false
+    val showRenameDialog: Boolean = false,
+    val isExporting: Boolean = false,
+    val exportedFileUri: Uri? = null,
+    val exportError: String? = null
 )

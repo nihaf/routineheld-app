@@ -75,6 +75,10 @@ fun PlanEditorScreen(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
+                            text = { Text("Als PDF exportieren") },
+                            onClick = { showMenu = false; viewModel.exportAsPdf() }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Plan umbenennen") },
                             onClick = { showMenu = false; viewModel.showRenameDialog() }
                         )
@@ -167,6 +171,28 @@ fun PlanEditorScreen(
             dismissButton = {
                 TextButton(onClick = viewModel::hideRenameDialog) {
                     Text("Abbrechen")
+                }
+            }
+        )
+    }
+
+    if (uiState.isExporting) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = { },
+            icon = { CircularProgressIndicator() },
+            text = { Text("PDF wird erstellt…") }
+        )
+    }
+
+    if (uiState.exportError != null) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissExportDialog,
+            title = { Text("Fehler") },
+            text = { Text(uiState.exportError) },
+            confirmButton = {
+                Button(onClick = viewModel::dismissExportDialog) {
+                    Text("OK")
                 }
             }
         )

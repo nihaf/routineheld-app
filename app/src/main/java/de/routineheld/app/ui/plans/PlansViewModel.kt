@@ -1,5 +1,6 @@
 package de.routineheld.app.ui.plans
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,11 +8,13 @@ import de.routineheld.app.data.local.entity.RoutinePlanEntity
 import de.routineheld.app.data.local.relation.RoutinePlanWithEntries
 import de.routineheld.app.data.repository.ActivityRepository
 import de.routineheld.app.data.repository.RoutinePlanRepository
+import de.routineheld.app.util.pdf.PdfExportManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlansViewModel @Inject constructor(
     private val planRepository: RoutinePlanRepository,
-    private val activityRepository: ActivityRepository
+    private val activityRepository: ActivityRepository,
+    private val pdfExportManager: PdfExportManager
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -89,10 +93,55 @@ class PlansViewModel @Inject constructor(
             if (newPlanId > 0) onDuplicated(newPlanId)
         }
     }
+
+    fun exportPlanAsPdf(planId: Long) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isExporting = true, exportError = null, exportedFileUri = null) }
+
+            val plan = allPlans.value.find { it.plan.id == planId }
+            if (plan == null) {
+                _uiState.update { it.copy(isExporting = false, exportError = "Plan nicht gefunden") }
+                return@launch
+            }
+
+            val allActivitiesList = activityRepository.getAllActivities().first()
+
+            val activityMap = plan.entries
+                .mapNotNull { entry ->
+                    allActivitiesList.find { it.id == entry.activityId }
+                }
+                .associateBy { it.id }
+
+            val result = pdfExportManager.exportPlan(plan, activityMap, childName = null)
+
+            when (result) {
+                is PdfExportManager.ExportResult.Success -> {
+                    _uiState.update { it.copy(
+                        isExporting = false,
+                        exportedFileUri = result.uri
+                    )}
+                    pdfExportManager.sharePdf(result.uri, plan.plan.name)
+                }
+                is PdfExportManager.ExportResult.Error -> {
+                    _uiState.update { it.copy(
+                        isExporting = false,
+                        exportError = result.message
+                    )}
+                }
+            }
+        }
+    }
+
+    fun dismissExportDialog() {
+        _uiState.update { it.copy(exportedFileUri = null, exportError = null) }
+    }
 }
 
 data class PlansUiState(
     val showCreateDialog: Boolean = false,
     val showDeleteDialog: Boolean = false,
-    val deleteCandidate: RoutinePlanEntity? = null
+    val deleteCandidate: RoutinePlanEntity? = null,
+    val isExporting: Boolean = false,
+    val exportedFileUri: Uri? = null,
+    val exportError: String? = null
 )

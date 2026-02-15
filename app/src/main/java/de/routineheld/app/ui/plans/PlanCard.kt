@@ -37,6 +37,7 @@ fun PlanCard(
     onClick: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,
+    onExport: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -71,6 +72,10 @@ fun PlanCard(
                         DropdownMenuItem(
                             text = { Text("Bearbeiten") },
                             onClick = { showMenu = false; onClick() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Als PDF exportieren") },
+                            onClick = { showMenu = false; onExport() }
                         )
                         DropdownMenuItem(
                             text = { Text("Duplizieren") },
