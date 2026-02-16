@@ -53,7 +53,7 @@ fun ActivityPickerSheet(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "Aktivität auswählen",
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(24.dp)
             )
 

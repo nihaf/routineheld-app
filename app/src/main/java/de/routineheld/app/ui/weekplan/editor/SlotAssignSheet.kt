@@ -26,7 +26,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -83,9 +83,10 @@ fun SlotAssignSheet(
             // Title
             Text(
                 text = "${day.labelDE} · ${time.labelDE}",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                style = MaterialTheme.typography.headlineSmall
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Mode selection
             Row(
@@ -186,12 +187,9 @@ fun SlotAssignSheet(
             // Action buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
             ) {
-                OutlinedButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
-                ) {
+                TextButton(onClick = onDismiss) {
                     Text("Abbrechen")
                 }
 
@@ -203,14 +201,11 @@ fun SlotAssignSheet(
                         }
                     },
                     enabled = (assignmentMode == "plan" && selectedPlanId != null) ||
-                            (assignmentMode == "activity" && selectedActivityId != null),
-                    modifier = Modifier.weight(1f)
+                            (assignmentMode == "activity" && selectedActivityId != null)
                 ) {
                     Text("Zuweisen")
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

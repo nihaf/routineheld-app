@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -144,17 +145,10 @@ fun WeekPlanEditorScreen(
     // Export progress dialog
     if (uiState.isExporting) {
         AlertDialog(
-            onDismissRequest = {},
-            title = { Text("PDF wird erstellt...") },
-            text = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            },
-            confirmButton = {}
+            onDismissRequest = { },
+            confirmButton = { },
+            icon = { CircularProgressIndicator() },
+            text = { Text("PDF wird erstellt…") }
         )
     }
 
@@ -162,10 +156,10 @@ fun WeekPlanEditorScreen(
     uiState.exportError?.let { error ->
         AlertDialog(
             onDismissRequest = viewModel::dismissExportError,
-            title = { Text("Fehler beim Export") },
+            title = { Text("Fehler") },
             text = { Text(error) },
             confirmButton = {
-                TextButton(onClick = viewModel::dismissExportError) {
+                Button(onClick = viewModel::dismissExportError) {
                     Text("OK")
                 }
             }

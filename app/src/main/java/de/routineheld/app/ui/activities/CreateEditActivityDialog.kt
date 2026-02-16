@@ -104,15 +104,15 @@ fun CreateEditActivityDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 24.dp)
+                    .padding(24.dp)
             ) {
                 // Title
                 Text(
                     text = if (isEditMode) "Aktivität bearbeiten" else "Neue Aktivität",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    style = MaterialTheme.typography.headlineSmall
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Name Field
                 OutlinedTextField(

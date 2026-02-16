@@ -68,8 +68,6 @@ fun CreateWeekPlanDialog(
                     Text("Erstellen")
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
