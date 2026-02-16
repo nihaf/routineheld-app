@@ -2,6 +2,7 @@ package de.routineheld.app.ui.activities
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -160,13 +160,20 @@ private fun ActivityCard(
             // Icon with optional colored background
             Box(
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(64.dp)
                     .then(
                         if (activity.color != null) {
-                            Modifier.background(
-                                color = Color(activity.color),
-                                shape = CircleShape
-                            ).padding(8.dp)
+                            Modifier
+                                .background(
+                                    color = Color(activity.color),
+                                    shape = CircleShape
+                                )
+                                .border(
+                                    width = 3.dp,
+                                    color = Color.White,
+                                    shape = CircleShape
+                                )
+                                .padding(10.dp)
                         } else Modifier
                     ),
                 contentAlignment = Alignment.Center
@@ -175,7 +182,7 @@ private fun ActivityCard(
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = activity.name,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(if (activity.color != null) 44.dp else 48.dp),
                         tint = Color.Unspecified
                     )
                 }
@@ -186,7 +193,7 @@ private fun ActivityCard(
             // Activity name
             Text(
                 text = activity.name,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
