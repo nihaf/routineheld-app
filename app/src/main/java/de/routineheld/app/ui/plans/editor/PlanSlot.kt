@@ -140,11 +140,17 @@ private fun FilledPlanSlot(
 
     SwipeToDismissBox(
         state = dismissState,
+        modifier = modifier
+            .fillMaxWidth(),
+//            .padding(horizontal = 16.dp),
         backgroundContent = {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.error)
+                    .background(
+                        MaterialTheme.colorScheme.error
+//                        MaterialTheme.shapes.medium
+                    )
                     .padding(horizontal = 24.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
@@ -159,9 +165,7 @@ private fun FilledPlanSlot(
         enableDismissFromEndToStart = true
     ) {
         Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Row(
@@ -171,8 +175,8 @@ private fun FilledPlanSlot(
                         if (activity.color != null) {
                             Modifier.border(
                                 width = 4.dp,
-                                color = Color(activity.color),
-                                shape = MaterialTheme.shapes.medium
+                                color = Color(activity.color)
+//                                shape = MaterialTheme.shapes.medium
                             )
                         } else Modifier
                     )

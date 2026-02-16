@@ -17,6 +17,8 @@ import de.routineheld.app.data.local.relation.RoutinePlanWithEntries
 import de.routineheld.app.util.IconRegistry
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.toColorInt
+import androidx.core.graphics.withSave
 
 class RoutinePlanPdfGenerator(
     private val context: Context
@@ -53,12 +55,12 @@ class RoutinePlanPdfGenerator(
     }
 
     private fun drawBackground(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor(PdfColors.PAGE_BACKGROUND))
+        canvas.drawColor(PdfColors.PAGE_BACKGROUND.toColorInt())
     }
 
     private fun drawTitle(canvas: Canvas, planName: String, childName: String?) {
         val paint = Paint().apply {
-            color = Color.parseColor(PdfColors.TITLE_TEXT)
+            color = PdfColors.TITLE_TEXT.toColorInt()
             textSize = 28f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
@@ -111,10 +113,10 @@ class RoutinePlanPdfGenerator(
     ) {
         val rect = RectF(x, y, x + width, y + height)
 
-        // Background (with optional activity color tint)
+        // Background (with activity color)
         val bgPaint = Paint().apply {
             color = if (activity.color != null && activity.color in 0..7) {
-                PdfColors.applyOpacity(PdfColors.activityColorHexes[activity.color!!], 0.3f)
+                Color.parseColor(PdfColors.activityColorHexes[activity.color!!])
             } else {
                 Color.parseColor(PdfColors.CARD_BACKGROUND)
             }
@@ -123,10 +125,10 @@ class RoutinePlanPdfGenerator(
         }
         canvas.drawRoundRect(rect, 8f, 8f, bgPaint)
 
-        // Border (with optional activity color)
+        // Border (darker shade of activity color)
         val borderPaint = Paint().apply {
             color = if (activity.color != null && activity.color in 0..7) {
-                PdfColors.applyOpacity(PdfColors.activityColorHexes[activity.color!!], 0.8f)
+                PdfColors.darken(PdfColors.activityColorHexes[activity.color!!], 0.15f)
             } else {
                 Color.parseColor(PdfColors.CARD_BORDER)
             }
@@ -146,14 +148,14 @@ class RoutinePlanPdfGenerator(
         val circleRadius = 11f
         val circleY = iconY + iconSize + 16f
         val circlePaint = Paint().apply {
-            color = Color.parseColor(PdfColors.NUMBER_CIRCLE)
+            color = PdfColors.NUMBER_CIRCLE.toColorInt()
             style = Paint.Style.FILL
             isAntiAlias = true
         }
         canvas.drawCircle(x + width / 2, circleY, circleRadius, circlePaint)
 
         val numPaint = Paint().apply {
-            color = Color.parseColor(PdfColors.NUMBER_TEXT)
+            color = PdfColors.NUMBER_TEXT.toColorInt()
             textSize = 14f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
@@ -163,7 +165,7 @@ class RoutinePlanPdfGenerator(
 
         // Activity name
         val namePaint = Paint().apply {
-            color = Color.parseColor(PdfColors.ACTIVITY_NAME)
+            color = PdfColors.ACTIVITY_NAME.toColorInt()
             textSize = if (width > 140) 12f else 10f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
@@ -190,21 +192,27 @@ class RoutinePlanPdfGenerator(
         paint: Paint,
         maxLines: Int
     ) {
-        val layout = StaticLayout.Builder.obtain(text, 0, text.length, TextPaint(paint), maxWidth.toInt())
+        val textPaint = TextPaint(paint)
+        val layoutWidth = maxWidth.toInt()
+
+        val layout = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, layoutWidth)
             .setAlignment(Layout.Alignment.ALIGN_CENTER)
             .setMaxLines(maxLines)
             .setEllipsize(TextUtils.TruncateAt.END)
+            .setIncludePad(false)
             .build()
 
-        canvas.save()
-        canvas.translate(centerX - maxWidth / 2, startY)
-        layout.draw(canvas)
-        canvas.restore()
+        canvas.withSave {
+            // Position the layout so that its center aligns with centerX
+            val leftPosition = centerX - layoutWidth / 2f
+            translate(leftPosition, startY)
+            layout.draw(this)
+        }
     }
 
     private fun drawFooter(canvas: Canvas) {
         val paint = Paint().apply {
-            color = Color.parseColor(PdfColors.FOOTER_TEXT)
+            color = PdfColors.FOOTER_TEXT.toColorInt()
             textSize = 8f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true

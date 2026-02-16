@@ -9,7 +9,10 @@
       "Bash(then cat app/build/reports/lint-results-debug.txt)",
       "Bash(else echo \"Text report not found\")",
       "Bash(fi)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "WebFetch(domain:openmoji.org)",
+      "Bash(gradle wrapper:*)",
+      "Bash(gradle:*)"
     ]
   }
 }

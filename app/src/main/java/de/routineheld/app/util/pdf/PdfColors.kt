@@ -1,5 +1,7 @@
 package de.routineheld.app.util.pdf
 
+import androidx.core.graphics.toColorInt
+
 object PdfColors {
     // Base colors (from theme)
     const val PAGE_BACKGROUND = "#F2EEEB"
@@ -24,7 +26,7 @@ object PdfColors {
     )
 
     fun applyOpacity(hexColor: String, opacity: Float): Int {
-        val color = android.graphics.Color.parseColor(hexColor)
+        val color = hexColor.toColorInt()
         val alpha = (opacity * 255).toInt()
         return android.graphics.Color.argb(
             alpha,
@@ -32,5 +34,13 @@ object PdfColors {
             android.graphics.Color.green(color),
             android.graphics.Color.blue(color)
         )
+    }
+
+    fun darken(hexColor: String, factor: Float): Int {
+        val color = hexColor.toColorInt()
+        val r = (android.graphics.Color.red(color) * (1 - factor)).toInt()
+        val g = (android.graphics.Color.green(color) * (1 - factor)).toInt()
+        val b = (android.graphics.Color.blue(color) * (1 - factor)).toInt()
+        return android.graphics.Color.rgb(r, g, b)
     }
 }

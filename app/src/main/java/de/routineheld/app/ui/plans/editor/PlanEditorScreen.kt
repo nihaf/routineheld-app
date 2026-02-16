@@ -1,10 +1,12 @@
 package de.routineheld.app.ui.plans.editor
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -130,7 +133,12 @@ fun PlanEditorScreen(
                         onRemoveEntry = { entry?.let { viewModel.removeEntry(it.id) } },
                         onMoveUp = { viewModel.moveEntryUp(position) },
                         onMoveDown = { viewModel.moveEntryDown(position) },
-                        modifier = Modifier.animateItemPlacement()
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = null, fadeOutSpec = null, placementSpec = spring(
+                                stiffness = Spring.StiffnessMediumLow,
+                                visibilityThreshold = IntOffset.VisibilityThreshold
+                            )
+                        )
                     )
                 }
             }

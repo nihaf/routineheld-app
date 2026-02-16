@@ -20,6 +20,7 @@ import de.routineheld.app.data.model.TimeOfDay
 import de.routineheld.app.util.IconRegistry
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.toColorInt
 
 class WeekPlanPdfGenerator(
     private val context: Context
@@ -64,12 +65,12 @@ class WeekPlanPdfGenerator(
     }
 
     private fun drawBackground(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor(PdfColors.PAGE_BACKGROUND))
+        canvas.drawColor(PdfColors.PAGE_BACKGROUND.toColorInt())
     }
 
     private fun drawTitle(canvas: Canvas, weekPlanName: String, childName: String?) {
         val paint = Paint().apply {
-            color = Color.parseColor(PdfColors.TITLE_TEXT)
+            color = PdfColors.TITLE_TEXT.toColorInt()
             textSize = 24f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
@@ -138,7 +139,7 @@ class WeekPlanPdfGenerator(
 
         // Text
         val textPaint = Paint().apply {
-            color = Color.parseColor(PdfColors.TITLE_TEXT)
+            color = PdfColors.TITLE_TEXT.toColorInt()
             textSize = 12f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
@@ -228,7 +229,7 @@ class WeekPlanPdfGenerator(
 
             // Plan name
             val namePaint = TextPaint().apply {
-                color = Color.parseColor(PdfColors.ACTIVITY_NAME)
+                color = PdfColors.ACTIVITY_NAME.toColorInt()
                 textSize = 9f
                 isAntiAlias = true
             }
@@ -256,7 +257,7 @@ class WeekPlanPdfGenerator(
 
             // Name
             val namePaint = TextPaint().apply {
-                color = Color.parseColor(PdfColors.ACTIVITY_NAME)
+                color = PdfColors.ACTIVITY_NAME.toColorInt()
                 textSize = 9f
                 isAntiAlias = true
             }
@@ -333,7 +334,7 @@ class WeekPlanPdfGenerator(
 
     private fun drawFooter(canvas: Canvas) {
         val paint = Paint().apply {
-            color = Color.parseColor(PdfColors.FOOTER_TEXT)
+            color = PdfColors.FOOTER_TEXT.toColorInt()
             textSize = 8f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true

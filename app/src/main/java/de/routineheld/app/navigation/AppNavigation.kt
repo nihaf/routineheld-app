@@ -11,6 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import de.routineheld.app.ui.activities.ActivitiesScreen
+import de.routineheld.app.ui.home.HomeScreen
 import de.routineheld.app.ui.plans.PlansScreen
 import de.routineheld.app.ui.plans.editor.PlanEditorScreen
 import de.routineheld.app.ui.weekplan.WeekPlanScreen
@@ -22,6 +23,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentRoute: Screen? = when (navBackStackEntry?.destination?.route) {
+        Screen.Home::class.qualifiedName -> Screen.Home
         Screen.Activities::class.qualifiedName -> Screen.Activities
         Screen.Plans::class.qualifiedName -> Screen.Plans
         Screen.WeekPlan::class.qualifiedName -> Screen.WeekPlan
@@ -46,9 +48,22 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Activities,
+            startDestination = Screen.Home,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable<Screen.Home> {
+                HomeScreen(
+                    onCreatePlan = { planId ->
+                        navController.navigate(Screen.PlanEditor(planId = planId))
+                    },
+                    onNavigateToPlans = {
+                        navController.navigate(Screen.Plans)
+                    },
+                    onCreateWeekPlan = { weekPlanId ->
+                        navController.navigate(Screen.WeekPlanEditor(weekPlanId = weekPlanId))
+                    }
+                )
+            }
             composable<Screen.Activities> {
                 ActivitiesScreen()
             }
