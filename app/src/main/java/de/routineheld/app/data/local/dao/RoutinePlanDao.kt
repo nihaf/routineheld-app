@@ -63,4 +63,26 @@ interface RoutinePlanDao {
 
     @Query("SELECT * FROM routine_plan_entries WHERE planId = :planId ORDER BY position ASC")
     suspend fun getEntriesForPlan(planId: Long): List<RoutinePlanEntryEntity>
+
+    @Query("DELETE FROM routine_plan_entries WHERE id = :entryId")
+    suspend fun deleteEntryById(entryId: Long)
+
+    @Transaction
+    @Query("SELECT * FROM routine_plans WHERE isTemplate = 0 ORDER BY updatedAt DESC")
+    fun getAllPlansWithEntries(): Flow<List<RoutinePlanWithEntries>>
+
+    @Transaction
+    suspend fun reorderEntries(planId: Long, fromPos: Int, toPos: Int) {
+        val entries = getEntriesForPlan(planId)
+        deleteAllEntries(planId)
+
+        val mutableList = entries.toMutableList()
+        val movedItem = mutableList.removeAt(fromPos)
+        mutableList.add(toPos, movedItem)
+
+        val updatedEntries = mutableList.mapIndexed { index, entry ->
+            entry.copy(position = index)
+        }
+        insertEntries(updatedEntries)
+    }
 }

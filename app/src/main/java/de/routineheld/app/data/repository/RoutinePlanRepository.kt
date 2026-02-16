@@ -59,4 +59,50 @@ class RoutinePlanRepository @Inject constructor(
 
     suspend fun getEntriesForPlan(planId: Long): List<RoutinePlanEntryEntity> =
         planDao.getEntriesForPlan(planId)
+
+    fun getAllPlansWithEntries(): Flow<List<RoutinePlanWithEntries>> =
+        planDao.getAllPlansWithEntries()
+
+    suspend fun reorderEntries(planId: Long, fromPos: Int, toPos: Int) {
+        planDao.reorderEntries(planId, fromPos, toPos)
+        touchPlan(planId)
+    }
+
+    suspend fun removeEntryById(entryId: Long, planId: Long) {
+        planDao.deleteEntryById(entryId)
+        touchPlan(planId)
+    }
+
+    suspend fun duplicatePlan(planId: Long): Long {
+        val original = planDao.getPlanWithEntriesOnce(planId) ?: return -1
+        val newPlan = original.plan.copy(
+            id = 0,
+            name = "${original.plan.name} (Kopie)",
+            isTemplate = false,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        val newPlanId = planDao.insert(newPlan)
+        val newEntries = original.entries.map {
+            it.copy(id = 0, planId = newPlanId)
+        }
+        planDao.insertEntries(newEntries)
+        return newPlanId
+    }
+
+    suspend fun updatePlanName(planId: Long, newName: String) {
+        val plan = planDao.getPlanWithEntriesOnce(planId)?.plan ?: return
+        planDao.update(plan.copy(
+            name = newName,
+            updatedAt = System.currentTimeMillis()
+        ))
+    }
+
+    suspend fun updateSlotCount(planId: Long, newSlotCount: Int) {
+        val plan = planDao.getPlanWithEntriesOnce(planId)?.plan ?: return
+        planDao.update(plan.copy(
+            slotCount = newSlotCount,
+            updatedAt = System.currentTimeMillis()
+        ))
+    }
 }

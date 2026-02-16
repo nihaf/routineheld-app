@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(./gradlew assembleDebug:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(if [ -f app/build/reports/lint-results-debug.txt ])",
+      "Bash(then cat app/build/reports/lint-results-debug.txt)",
+      "Bash(else echo \"Text report not found\")",
+      "Bash(fi)",
+      "Bash(./gradlew:*)",
+      "WebFetch(domain:openmoji.org)",
+      "Bash(gradle wrapper:*)",
+      "Bash(gradle:*)"
+    ]
+  }
+}

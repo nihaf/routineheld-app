@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 sealed interface Screen {
 
     @Serializable
+    data object Home : Screen
+
+    @Serializable
     data object Activities : Screen
 
     @Serializable
@@ -16,6 +19,9 @@ sealed interface Screen {
 
     @Serializable
     data class PlanEditor(val planId: Long? = null) : Screen
+
+    @Serializable
+    data class WeekPlanEditor(val weekPlanId: Long) : Screen
 
     @Serializable
     data object Settings : Screen

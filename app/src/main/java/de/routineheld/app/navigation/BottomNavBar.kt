@@ -3,6 +3,7 @@ package de.routineheld.app.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -18,6 +19,7 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
+    BottomNavItem("Start", Icons.Outlined.Home, Screen.Home),
     BottomNavItem("Aktivitäten", Icons.Outlined.Category, Screen.Activities),
     BottomNavItem("Abläufe", Icons.Outlined.ViewList, Screen.Plans),
     BottomNavItem("Wochenplan", Icons.Outlined.CalendarMonth, Screen.WeekPlan)

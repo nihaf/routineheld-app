@@ -9,9 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import de.routineheld.app.ui.activities.ActivitiesScreen
+import de.routineheld.app.ui.home.HomeScreen
 import de.routineheld.app.ui.plans.PlansScreen
+import de.routineheld.app.ui.plans.editor.PlanEditorScreen
 import de.routineheld.app.ui.weekplan.WeekPlanScreen
+import de.routineheld.app.ui.weekplan.editor.WeekPlanEditorScreen
 
 @Composable
 fun AppNavigation() {
@@ -19,6 +23,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentRoute: Screen? = when (navBackStackEntry?.destination?.route) {
+        Screen.Home::class.qualifiedName -> Screen.Home
         Screen.Activities::class.qualifiedName -> Screen.Activities
         Screen.Plans::class.qualifiedName -> Screen.Plans
         Screen.WeekPlan::class.qualifiedName -> Screen.WeekPlan
@@ -43,17 +48,52 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Activities,
+            startDestination = Screen.Home,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable<Screen.Home> {
+                HomeScreen(
+                    onCreatePlan = { planId ->
+                        navController.navigate(Screen.PlanEditor(planId = planId))
+                    },
+                    onNavigateToPlans = {
+                        navController.navigate(Screen.Plans)
+                    },
+                    onCreateWeekPlan = { weekPlanId ->
+                        navController.navigate(Screen.WeekPlanEditor(weekPlanId = weekPlanId))
+                    }
+                )
+            }
             composable<Screen.Activities> {
                 ActivitiesScreen()
             }
             composable<Screen.Plans> {
-                PlansScreen()
+                PlansScreen(
+                    onNavigateToEditor = { planId ->
+                        navController.navigate(Screen.PlanEditor(planId = planId))
+                    }
+                )
+            }
+            composable<Screen.PlanEditor> { backStackEntry ->
+                val planEditor: Screen.PlanEditor = backStackEntry.toRoute()
+                PlanEditorScreen(
+                    planId = planEditor.planId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable<Screen.WeekPlan> {
-                WeekPlanScreen()
+                WeekPlanScreen(
+                    onNavigateToEditor = { weekPlanId ->
+                        navController.navigate(Screen.WeekPlanEditor(weekPlanId = weekPlanId))
+                    }
+                )
+            }
+            composable<Screen.WeekPlanEditor> { backStackEntry ->
+                val weekPlanEditor: Screen.WeekPlanEditor = backStackEntry.toRoute()
+                WeekPlanEditorScreen(
+                    weekPlanId = weekPlanEditor.weekPlanId,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
     }
