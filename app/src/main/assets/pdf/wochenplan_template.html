@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1123, initial-scale=1, maximum-scale=1"/>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 30px 30px 22px 30px;
+    width: 1123px;
+    min-height: 794px;
+    background: #F2EEEB;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Title area ── */
+.title-section {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.washi-tape {
+    display: inline-block;
+    background: #F5E6A3;
+    border-radius: 3px;
+    padding: 3px 12px;
+    margin: 0 auto 5px auto;
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: #E8C84C;
+    user-select: none;
+}
+.plan-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    margin: 0 0 4px 0;
+}
+.subtitle {
+    font-size: 12px;
+    color: #8B7B6B;
+    font-style: italic;
+    margin: 0 0 10px 0;
+}
+
+/* ── Table ── */
+.week-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 0.8px solid #D8CFC4;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.week-table th,
+.week-table td {
+    border: 0.8px solid #D8CFC4;
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px;
+}
+
+/* ── Day headers (colorful per-day) ── */
+.day-header {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    height: 30px;
+    letter-spacing: 0.5px;
+}
+.dh-corner { background: #EDE6DE; }
+.dh-mo { background: #8FBCD4; }
+.dh-di { background: #A3BFAD; }
+.dh-mi { background: #C4C88C; }
+.dh-do { background: #E8C870; color: #5C3D2E; }
+.dh-fr { background: #E8A87C; }
+.dh-sa { background: #D8909C; }
+.dh-so { background: #C0A0D0; }
+
+/* ── Time headers (with icon) ── */
+.time-header {
+    font-size: 9px;
+    font-weight: 700;
+    color: #442B1A;
+    width: 56px;
+}
+.time-header.morning   { background: #FFF8E1; }
+.time-header.afternoon { background: #E8F5E9; }
+.time-header.evening   { background: #E3E8F5; }
+.time-icon {
+    display: block;
+    font-size: 16px;
+    line-height: 1.2;
+}
+.time-label {
+    display: block;
+    font-size: 8px;
+}
+
+/* ── Data cells ── */
+.cell { height: 58px; }
+.cell.morning   { background: #FFFCF0; }
+.cell.afternoon { background: #F5FAF5; }
+.cell.evening   { background: #F0F2FA; }
+
+.mini-icons { text-align: center; }
+.mini-icons img { margin: 1px; vertical-align: middle; }
+.plan-name {
+    font-size: 8px;
+    color: #5C3D2E;
+    display: block;
+    word-wrap: break-word;
+    margin-top: 2px;
+    line-height: 1.2;
+}
+.big-icon {
+    display: block;
+    margin: 0 auto 2px auto;
+}
+.act-name {
+    font-size: 8px;
+    color: #5C3D2E;
+    display: block;
+    word-wrap: break-word;
+    line-height: 1.2;
+}
+.empty {
+    color: #C8BDB2;
+    font-size: 14px;
+}
+
+/* ── Footer ── */
+.page-footer {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 7px;
+    color: #B8A898;
+    font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="title-section">
+  <div class="washi-tape">♥ · · · · · ♥</div>
+  <div class="plan-title">{{TITLE_LETTERS}}</div>
+  <div class="subtitle">{{SUBTITLE}}</div>
+</div>
+<table class="week-table">
+<colgroup>
+  <col style="width: 56px;"/>
+  <col/>
+  <col/>
+  <col/>
+  <col/>
+  <col/>
+  <col/>
+  <col/>
+</colgroup>
+<thead>
+<tr>
+  <th class="day-header dh-corner"></th>
+  <th class="day-header dh-mo">Mo</th>
+  <th class="day-header dh-di">Di</th>
+  <th class="day-header dh-mi">Mi</th>
+  <th class="day-header dh-do">Do</th>
+  <th class="day-header dh-fr">Fr</th>
+  <th class="day-header dh-sa">Sa</th>
+  <th class="day-header dh-so">So</th>
+</tr>
+</thead>
+<tbody>
+{{TABLE_ROWS}}
+</tbody>
+</table>
+<div class="page-footer">erstellt mit RoutineHeld</div>
+</body>
+</html>

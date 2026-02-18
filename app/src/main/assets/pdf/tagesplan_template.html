@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=794, initial-scale=1, maximum-scale=1"/>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 42px 42px 28px 42px;
+    width: 794px;
+    min-height: 1123px;
+    background: #F2EEEB;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Title area ── */
+.title-section {
+    text-align: center;
+    margin-bottom: 16px;
+}
+.washi-tape {
+    display: inline-block;
+    background: #F5E6A3;
+    border-radius: 4px;
+    padding: 4px 14px;
+    margin: 0 auto 8px auto;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: #E8C84C;
+    user-select: none;
+}
+.plan-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    margin: 0 0 6px 0;
+}
+.subtitle {
+    font-size: 14px;
+    color: #8B7B6B;
+    font-style: italic;
+    margin: 0 0 10px 0;
+}
+
+/* ── Cards ── */
+.cards-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px 10px;
+}
+.card {
+    background: #fff;
+    border: 0.8px solid #E8DDD2;
+    border-radius: 8px;
+    text-align: center;
+    vertical-align: top;
+    padding: 0;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.07);
+    overflow: hidden;
+}
+.accent-bar {
+    display: block;
+    height: 5px;
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+}
+.card-icon {
+    display: block;
+    margin: 10px auto 5px auto;
+    width: 70px;
+    height: 70px;
+}
+.number-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #E8A87C;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 3px auto 4px auto;
+}
+.card-name {
+    font-size: 10px;
+    color: #5C3D2E;
+    line-height: 1.3;
+    padding: 0 5px 9px 5px;
+    word-wrap: break-word;
+}
+
+/* ── Footer ── */
+.page-footer {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 8px;
+    color: #B8A898;
+    font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="title-section">
+  <div class="washi-tape">♥ · · · · · ♥</div>
+  <div class="plan-title">{{PLAN_TITLE_LETTERS}}</div>
+  <div class="subtitle">{{SUBTITLE}}</div>
+</div>
+<table class="cards-table">
+{{ROWS_HTML}}
+</table>
+<div class="page-footer">erstellt mit RoutineHeld</div>
+</body>
+</html>
