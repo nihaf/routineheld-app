@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>RoutineHeld PDF Redesign Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #e8e0d8; padding: 40px; }
+  
+  h1 { text-align: center; color: #442B1A; margin-bottom: 30px; font-size: 20px; }
+  .preview-row { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+  .preview-label { text-align: center; color: #8B7B6B; font-size: 13px; margin-top: 12px; font-style: italic; }
+  
+  /* ── TAGESPLAN (Portrait A4) ── */
+  .tagesplan {
+    width: 420px;
+    height: 594px;
+    background: #F2EEEB;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tagesplan .inner-panel {
+    position: absolute;
+    top: 64px; left: 18px; right: 18px; bottom: 22px;
+    background: #F8F4F0;
+    border-radius: 10px;
+  }
+  
+  /* Washi tape */
+  .tape {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 20px;
+    background: #F5E6A3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    z-index: 2;
+  }
+  .tape .dot { width: 4px; height: 4px; border-radius: 50%; background: #E8C84C; }
+  .tape .heart { color: #E8909C; font-size: 7px; }
+  
+  /* Colorful title */
+  .colorful-title {
+    position: absolute;
+    top: 32px;
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    z-index: 1;
+  }
+  .colorful-title span:nth-child(1) { color: #E07850; }
+  .colorful-title span:nth-child(2) { color: #5BAB8A; }
+  .colorful-title span:nth-child(3) { color: #E8A040; }
+  .colorful-title span:nth-child(4) { color: #7BAFD4; }
+  .colorful-title span:nth-child(5) { color: #D4789C; }
+  .colorful-title span:nth-child(6) { color: #9BB864; }
+  .colorful-title span:nth-child(7) { color: #C8A0D8; }
+  .colorful-title span:nth-child(8) { color: #E8C84C; }
+  .colorful-title span:nth-child(9) { color: #6BAFB8; }
+  
+  .subtitle {
+    position: absolute;
+    top: 64px;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #8B7B6B;
+    font-style: italic;
+    z-index: 1;
+  }
+  
+  /* Card grid */
+  .card-grid {
+    position: absolute;
+    top: 86px;
+    left: 30px;
+    right: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    z-index: 1;
+  }
+  
+  .activity-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 0.8px solid #E8DDD2;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.07);
+    padding: 6px 4px 8px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .activity-card .accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 8px 8px 0 0;
+  }
+  .activity-card .icon {
+    font-size: 38px;
+    margin: 8px 0 4px;
+    line-height: 1;
+  }
+  .activity-card .number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #E8A87C;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    margin: 2px 0;
+  }
+  .activity-card .name {
+    font-size: 9px;
+    color: #5C3D2E;
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+  
+  .tagesplan .footer {
+    position: absolute;
+    bottom: 6px;
+    width: 100%;
+    text-align: center;
+    font-size: 7px;
+    color: #B8A898;
+    font-style: italic;
+  }
+  
+  /* Colors */
+  .c0 { background: #F2D8A7; }
+  .c1 { background: #D9E8DD; }
+  .c2 { background: #D4E6F0; }
+  .c3 { background: #F2BEA0; }
+  .c4 { background: #E8D4E8; }
+  .c5 { background: #F5E6A3; }
+  .c6 { background: #D4ECEC; }
+  .c7 { background: #F0D4D4; }
+  
+  /* ── WOCHENPLAN (Landscape A4) ── */
+  .wochenplan {
+    width: 680px;
+    height: 480px;
+    background: #F2EEEB;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .wochenplan .colorful-title {
+    top: 16px;
+    font-size: 22px;
+    letter-spacing: 6px;
+  }
+  .wochenplan .colorful-title span:nth-child(1) { color: #E07850; }
+  .wochenplan .colorful-title span:nth-child(2) { color: #5BAB8A; }
+  .wochenplan .colorful-title span:nth-child(3) { color: #E8A040; }
+  .wochenplan .colorful-title span:nth-child(4) { color: #7BAFD4; }
+  .wochenplan .colorful-title span:nth-child(5) { color: #D4789C; }
+  .wochenplan .colorful-title span:nth-child(6) { color: #9BB864; }
+  .wochenplan .colorful-title span:nth-child(7) { color: #C8A0D8; }
+  .wochenplan .colorful-title span:nth-child(8) { color: #E8C84C; }
+  .wochenplan .colorful-title span:nth-child(9) { color: #6BAFB8; }
+  .wochenplan .colorful-title span:nth-child(10) { color: #E09870; }
+  
+  .wochenplan .subtitle { top: 44px; }
+  
+  .week-table {
+    position: absolute;
+    top: 62px;
+    left: 22px;
+    right: 22px;
+    bottom: 24px;
+    display: grid;
+    grid-template-columns: 52px repeat(7, 1fr);
+    grid-template-rows: 30px repeat(3, 1fr);
+    border: 0.8px solid #D8CFC4;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    border-bottom: 0.8px solid #D8CFC4;
+  }
+  .day-header:not(:last-child) { border-right: 0.8px solid #D8CFC4; }
+  .dh-mo { background: #8FBCD4; }
+  .dh-di { background: #A3BFAD; }
+  .dh-mi { background: #C4C88C; }
+  .dh-do { background: #E8C870; }
+  .dh-fr { background: #E8A87C; }
+  .dh-sa { background: #D8909C; }
+  .dh-so { background: #C0A0D0; }
+  
+  .time-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    font-weight: 700;
+    color: #442B1A;
+    border-right: 0.8px solid #D8CFC4;
+    border-bottom: 0.8px solid #D8CFC4;
+    gap: 2px;
+  }
+  .time-header .time-icon { font-size: 14px; }
+  .th-morning { background: #FFF8E1; }
+  .th-afternoon { background: #E8F5E9; }
+  .th-evening { background: #E3E8F5; }
+  
+  .corner-header {
+    background: #EDE6DE;
+    border-right: 0.8px solid #D8CFC4;
+    border-bottom: 0.8px solid #D8CFC4;
+  }
+  
+  .week-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 0.8px solid #D8CFC4;
+    border-bottom: 0.8px solid #D8CFC4;
+    padding: 3px;
+    gap: 2px;
+  }
+  .week-cell:nth-child(8n) { border-right: none; }
+  .week-cell.morning { background: #FFFCF0; }
+  .week-cell.afternoon { background: #F5FAF5; }
+  .week-cell.evening { background: #F0F2FA; }
+  .week-cell .cell-icon { font-size: 22px; }
+  .week-cell .cell-name { font-size: 7px; color: #5C3D2E; text-align: center; line-height: 1.2; }
+  .week-cell .cell-empty { color: #C8BDB2; font-size: 12px; }
+  .week-cell .mini-icons { display: flex; gap: 1px; font-size: 14px; }
+  .week-cell .plan-name { font-size: 6.5px; color: #5C3D2E; text-align: center; }
+  
+  .wochenplan .footer {
+    position: absolute;
+    bottom: 4px;
+    width: 100%;
+    text-align: center;
+    font-size: 7px;
+    color: #B8A898;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<h1>RoutineHeld — PDF Design Preview</h1>
+
+<div class="preview-row">
+
+<!-- ═══════════════════════════════════════════ -->
+<!--              TAGESPLAN PREVIEW             -->
+<!-- ═══════════════════════════════════════════ -->
+<div>
+<div class="tagesplan">
+  <div class="tape">
+    <span class="heart">♥</span>
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <span class="heart">♥</span>
+  </div>
+  
+  <div class="colorful-title">
+    <span>T</span><span>A</span><span>G</span><span>E</span><span>S</span><span>P</span><span>L</span><span>A</span><span>N</span>
+  </div>
+  <div class="subtitle">~ für Emma ~</div>
+  
+  <div class="inner-panel"></div>
+  
+  <div class="card-grid">
+    <div class="activity-card">
+      <div class="accent-bar c0"></div>
+      <div class="icon">☀️</div>
+      <div class="number">1</div>
+      <div class="name">Aufwachen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c1"></div>
+      <div class="icon">🥣</div>
+      <div class="number">2</div>
+      <div class="name">Frühstücken</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c2"></div>
+      <div class="icon">👕</div>
+      <div class="number">3</div>
+      <div class="name">Kleidung anziehen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c3"></div>
+      <div class="icon">🏫</div>
+      <div class="number">4</div>
+      <div class="name">Kindergarten</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c4"></div>
+      <div class="icon">🥗</div>
+      <div class="number">5</div>
+      <div class="name">Mittagessen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c5"></div>
+      <div class="icon">😴</div>
+      <div class="number">6</div>
+      <div class="name">Mittagsruhe</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c6"></div>
+      <div class="icon">🌳</div>
+      <div class="number">7</div>
+      <div class="name">Draußen spielen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c7"></div>
+      <div class="icon">🛒</div>
+      <div class="number">8</div>
+      <div class="name">Einkaufen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c0"></div>
+      <div class="icon">🍝</div>
+      <div class="number">9</div>
+      <div class="name">Abendessen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c1"></div>
+      <div class="icon">🧦</div>
+      <div class="number">10</div>
+      <div class="name">Schlafanzug</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c2"></div>
+      <div class="icon">📖</div>
+      <div class="number">11</div>
+      <div class="name">Buch lesen</div>
+    </div>
+    <div class="activity-card">
+      <div class="accent-bar c3"></div>
+      <div class="icon">🌙</div>
+      <div class="number">12</div>
+      <div class="name">Gute Nacht</div>
+    </div>
+  </div>
+  
+  <div class="footer">erstellt mit RoutineHeld</div>
+</div>
+<div class="preview-label">Tagesplan / Ablaufplan (A4 Hochformat)</div>
+</div>
+
+</div>
+
+<br><br>
+
+<div style="display:flex;justify-content:center;">
+<div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--             WOCHENPLAN PREVIEW             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="wochenplan">
+  <div class="colorful-title">
+    <span>W</span><span>O</span><span>C</span><span>H</span><span>E</span><span>N</span><span>P</span><span>L</span><span>A</span><span>N</span>
+  </div>
+  <div class="subtitle">~ für Emma ~</div>
+  
+  <div class="week-table">
+    <!-- Header row -->
+    <div class="corner-header"></div>
+    <div class="day-header dh-mo">MO</div>
+    <div class="day-header dh-di">DI</div>
+    <div class="day-header dh-mi">MI</div>
+    <div class="day-header dh-do">DO</div>
+    <div class="day-header dh-fr">FR</div>
+    <div class="day-header dh-sa">SA</div>
+    <div class="day-header dh-so">SO</div>
+    
+    <!-- Morning row -->
+    <div class="time-header th-morning">
+      <span class="time-icon">☀</span>
+      <span>Morgens</span>
+    </div>
+    <div class="week-cell morning">
+      <div class="mini-icons">🏫👕</div>
+      <div class="plan-name">Morgenroutine</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="mini-icons">🏫👕</div>
+      <div class="plan-name">Morgenroutine</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="mini-icons">🏫👕</div>
+      <div class="plan-name">Morgenroutine</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="mini-icons">🏫👕</div>
+      <div class="plan-name">Morgenroutine</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="mini-icons">🏫👕</div>
+      <div class="plan-name">Morgenroutine</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="cell-icon">😴</div>
+      <div class="cell-name">Ausschlafen</div>
+    </div>
+    <div class="week-cell morning">
+      <div class="cell-icon">😴</div>
+      <div class="cell-name">Ausschlafen</div>
+    </div>
+    
+    <!-- Afternoon row -->
+    <div class="time-header th-afternoon">
+      <span class="time-icon">☁</span>
+      <span>Mittags</span>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">🌳</div>
+      <div class="cell-name">Wald</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">👫</div>
+      <div class="cell-name">Freunde treffen</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">🧸</div>
+      <div class="cell-name">Spielzeugtag</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">⚽</div>
+      <div class="cell-name">Fußball</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">🍕</div>
+      <div class="cell-name">Essen bestellen</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">👨‍👩‍👧</div>
+      <div class="cell-name">Familienzeit</div>
+    </div>
+    <div class="week-cell afternoon">
+      <div class="cell-icon">👨‍👩‍👧</div>
+      <div class="cell-name">Familienzeit</div>
+    </div>
+    
+    <!-- Evening row -->
+    <div class="time-header th-evening">
+      <span class="time-icon">☾</span>
+      <span>Abends</span>
+    </div>
+    <div class="week-cell evening">
+      <div class="mini-icons">📖🌙</div>
+      <div class="plan-name">Abendroutine</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="mini-icons">📖🌙</div>
+      <div class="plan-name">Abendroutine</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="mini-icons">📖🌙</div>
+      <div class="plan-name">Abendroutine</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="mini-icons">📖🌙</div>
+      <div class="plan-name">Abendroutine</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="mini-icons">📖🌙</div>
+      <div class="plan-name">Abendroutine</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="cell-icon">🎮</div>
+      <div class="cell-name">Spieleabend</div>
+    </div>
+    <div class="week-cell evening">
+      <div class="cell-empty">—</div>
+    </div>
+  </div>
+  
+  <div class="footer">erstellt mit RoutineHeld</div>
+</div>
+<div class="preview-label">Wochenplan (A4 Querformat)</div>
+
+</div>
+</div>
+
+</body>
+</html>
